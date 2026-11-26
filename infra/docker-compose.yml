@@ -3,7 +3,7 @@
 services:
   kafka:
     image: apache/kafka:3.9.0
-    container_name: kafka
+    container_name: kp-kafka
     ports:
       - "9092:9092"
     environment:
@@ -39,7 +39,7 @@ services:
 
   postgres:
     image: postgres:16
-    container_name: postgres
+    container_name: kp-postgres
     ports:
       - "5432:5432"
     environment:
@@ -57,7 +57,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: redis
+    container_name: kp-redis
     ports:
       - "6379:6379"
 
@@ -68,7 +68,7 @@ services:
   payment-api:
     profiles: ["apps"]
     build: { context: .., dockerfile: Dockerfile, args: { MODULE: payment-api } }
-    container_name: payment-api
+    container_name: kp-payment-api
     ports:
       - "8080:8080"
     environment: &app-env
@@ -83,7 +83,7 @@ services:
   fraud-scoring:
     profiles: ["apps"]
     build: { context: .., dockerfile: Dockerfile, args: { MODULE: fraud-scoring } }
-    container_name: fraud-scoring
+    container_name: kp-fraud-scoring
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on: *app-deps
@@ -91,7 +91,7 @@ services:
   ledger-service:
     profiles: ["apps"]
     build: { context: .., dockerfile: Dockerfile, args: { MODULE: ledger-service } }
-    container_name: ledger-service
+    container_name: kp-ledger-service
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ledger
@@ -100,6 +100,6 @@ services:
   notification-service:
     profiles: ["apps"]
     build: { context: .., dockerfile: Dockerfile, args: { MODULE: notification-service } }
-    container_name: notification-service
+    container_name: kp-notification-service
     environment: *app-env
     depends_on: *app-deps

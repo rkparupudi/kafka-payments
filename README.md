@@ -82,9 +82,9 @@ Expected behaviour:
 Useful checks:
 
 ```bash
-docker exec -it postgres psql -U payments -d ledger -c "SELECT * FROM ledger_imbalances;"   # must be empty
-docker exec -it kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups
-docker exec -it kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+docker exec -it kp-postgres psql -U payments -d ledger -c "SELECT * FROM ledger_imbalances;"   # must be empty
+docker exec -it kp-kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups
+docker exec -it kp-kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
   --topic payments.decided --from-beginning --property print.key=true --isolation-level read_committed
 ```
 

@@ -25,4 +25,4 @@ sleep 3
 echo "== Final status"
 curl -s "$API/payments/$ID";  echo
 curl -s "$API/payments/$ID2"; echo
-echo "Check the ledger:  docker exec -it postgres psql -U payments -d ledger -c 'SELECT payment_id, leg, account_id, amount_minor FROM ledger_entries;'"
+echo "Check the ledger:  docker exec -it kp-postgres psql -U payments -d ledger -c 'SELECT payment_id, leg, account_id, amount_minor FROM ledger_entries;'"
