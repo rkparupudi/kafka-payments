@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: ledger-service
+  main:
+    web-application-type: none
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ledger
+    username: payments
+    password: payments
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: true
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      isolation-level: read_committed      # never read aborted Streams transactions
+      max-poll-records: 200
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        partition.assignment.strategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+    listener:
+      ack-mode: record                     # commit after each successfully processed record
+
+outbox:
+  relay:
+    enabled: true

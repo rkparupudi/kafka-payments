@@ -1,0 +1,24 @@
+{
+  "_comment": "Production alternative to OutboxRelay. Register with Kafka Connect (Debezium Postgres connector). Verify property names against your Debezium version's docs; set outbox.relay.enabled=false in the services when using this.",
+  "name": "payments-outbox",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "payments",
+    "database.password": "payments",
+    "database.dbname": "payments",
+    "topic.prefix": "paymentsdb",
+    "table.include.list": "public.outbox",
+    "tombstones.on.delete": "false",
+    "transforms": "outbox",
+    "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+    "transforms.outbox.route.by.field": "aggregate_type",
+    "transforms.outbox.route.topic.replacement": "${routedByValue}",
+    "transforms.outbox.table.field.event.key": "aggregate_id",
+    "transforms.outbox.table.field.event.payload": "payload",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+  }
+}

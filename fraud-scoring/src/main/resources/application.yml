@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: fraud-scoring
+  main:
+    web-application-type: none
+  kafka:
+    bootstrap-servers: localhost:9092
+    streams:
+      application-id: fraud-scoring
+      properties:
+        processing.guarantee: exactly_once_v2
+        num.standby.replicas: 0          # 1 in production for warm failover
+        commit.interval.ms: 100          # EOS default; bounds end-to-end latency
+        replication.factor: 1            # internal topics; 3 in production
+        default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
+        state.dir: ./target/kafka-streams-state
+
+logging:
+  level:
+    org.apache.kafka: WARN
