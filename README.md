@@ -31,7 +31,25 @@ POST /payments ──► payment-api ──(1 DB txn)──► payments + outbox
 | `ledger-service` | At-least-once consumer that has an exactly-once effect through the `processed_payments` primary key. Exponential backoff, then `payments.decided.dlq` |
 | `notification-service` | At-least-once consumer that dedups with Redis `SET NX EX` |
 
-## Run it locally
+## Run everything in Docker (only Docker Desktop needed)
+
+```bash
+# 1. Compile + run unit tests inside a Maven container (Linux/macOS/Git Bash; PowerShell: use ${PWD})
+docker run --rm -v "$PWD":/src -v kafka-payments-m2:/root/.m2 -w /src maven:3.9-eclipse-temurin-21 mvn -B clean verify
+
+# 2. Start infra + all four services (builds the images)
+cd infra && docker compose --profile apps up -d --build && cd ..
+
+# 3. Seed profiles, run the demo, watch logs
+./scripts/seed-profiles.sh
+./scripts/demo.sh
+docker compose -f infra/docker-compose.yml logs -f fraud-scoring ledger-service
+
+# 4. Tear down (deletes data)
+cd infra && docker compose --profile apps down -v
+```
+
+## Run it locally (services on the host)
 
 Prerequisites: JDK 21, Maven 3.9+, Docker.
 
